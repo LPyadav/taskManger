@@ -199,27 +199,8 @@ This is a Laravel-based task management application that allows users to registe
     
     ```
 
-## Error Handling
 
-1. **Validation Errors**
-    Display validation errors in the form.
 
-2. **AJAX Error Handling**
-    Handle AJAX errors gracefully.
-
-## Code Quality
-
-1. **PSR Standards**
-    Ensure your code follows PSR standards.
-
-2. **Comments and Documentation**
-    Comment your code and maintain good documentation practices.
-
----
-
-For further details, refer to the Laravel documentation and the Tailwind CSS documentation for styling components.
-
----
 
 ### Author
 

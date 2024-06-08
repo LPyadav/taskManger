@@ -19,8 +19,7 @@ use App\Http\Controllers\{
 */
 
 Route::get('/', function () {
-   event(new App\Events\TaskRealTimeUpdate);
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {

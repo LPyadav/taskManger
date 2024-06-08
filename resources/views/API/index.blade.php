@@ -1,4 +1,5 @@
 <x-app-layout>
+    <div id="loader"></div>
     <div class="container mx-auto px-4 ">
         <h1 class="text-2xl font-bold mb-4">Task List</h1>
         <button id="addTaskButton" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4">Add

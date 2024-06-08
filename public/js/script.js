@@ -15,7 +15,6 @@ $(document).ready(function () {
 
         $.post("/api/tasks", formData)
             .done(function (response) {
-                // fetchTasks(); // Refresh task list
                 var task = response.data;
                 var rowCount = $("#taskTableBody tr").length;
                 var alreadyHave = $(
@@ -280,45 +279,48 @@ function openEditModal(task) {
 Echo.channel(`task`).listen("TaskRealTimeUpdate", (data) => {
     if (data?.task?.type == "create") {
         var task = data?.task.data;
-        var rowCount = $("#taskTableBody tr").length;
-        var row = $("<tr>").attr("data-task-id", task.id);
-        row.append($("<td>").text(rowCount + 1));
-        row.append($("<td>").text(task.title));
-        row.append($("<td>").text(task.description));
-        if (task.status == "pending") {
-            row.append(
-                $("<td>")
-                    .text(task.status)
-                    .addClass("text-yellow-600 hover:text-yellow-900")
+        var alreadyHave = $('tr[data-task-id="' + task.id + '"]').length;
+        if (!alreadyHave) {
+            var rowCount = $("#taskTableBody tr").length;
+            var row = $("<tr>").attr("data-task-id", task.id);
+            row.append($("<td>").text(rowCount + 1));
+            row.append($("<td>").text(task.title));
+            row.append($("<td>").text(task.description));
+            if (task.status == "pending") {
+                row.append(
+                    $("<td>")
+                        .text(task.status)
+                        .addClass("text-yellow-600 hover:text-yellow-900")
+                );
+            } else {
+                row.append(
+                    $("<td>")
+                        .text(task.status)
+                        .addClass("text-green-600 hover:text-green-900")
+                );
+            }
+            var actions = $("<td>").addClass(
+                "px-6 py-4 whitespace-nowrap  text-sm font-medium"
             );
-        } else {
-            row.append(
-                $("<td>")
-                    .text(task.status)
-                    .addClass("text-green-600 hover:text-green-900")
-            );
+            var editButton = $("<button>")
+                .addClass("edit-btn text-indigo-600 hover:text-indigo-900")
+                .text("Edit")
+                .data("task", task)
+                .click(function () {
+                    openEditModal($(this).data("task"));
+                });
+            actions.append(editButton);
+            var deleteButton = $("<button>")
+                .addClass("delete-btn text-red-600 hover:text-red-900 ml-2")
+                .text("Delete")
+                .data("task-id", task.id)
+                .click(function () {
+                    deleteTask($(this).data("task-id"));
+                });
+            actions.append(deleteButton);
+            row.append(actions);
+            $("#taskTableBody").append(row);
         }
-        var actions = $("<td>").addClass(
-            "px-6 py-4 whitespace-nowrap  text-sm font-medium"
-        );
-        var editButton = $("<button>")
-            .addClass("edit-btn text-indigo-600 hover:text-indigo-900")
-            .text("Edit")
-            .data("task", task)
-            .click(function () {
-                openEditModal($(this).data("task"));
-            });
-        actions.append(editButton);
-        var deleteButton = $("<button>")
-            .addClass("delete-btn text-red-600 hover:text-red-900 ml-2")
-            .text("Delete")
-            .data("task-id", task.id)
-            .click(function () {
-                deleteTask($(this).data("task-id"));
-            });
-        actions.append(deleteButton);
-        row.append(actions);
-        $("#taskTableBody").append(row);
     } else {
         if (data?.task?.type == "update") {
             var task = data?.task.data;
@@ -420,3 +422,17 @@ $(document).ready(function () {
         $("#userError, #taskError").addClass("hidden");
     }
 });
+
+
+    $(document).ready(function() {
+        // Show loader on AJAX start
+        $(document).ajaxStart(function() {
+            $("#overlay, #loader").show();
+        });
+        
+        // Hide loader on AJAX complete
+        $(document).ajaxStop(function() {
+            $("#overlay, #loader").hide();
+        });
+    });
+
